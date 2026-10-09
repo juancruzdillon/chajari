@@ -15,7 +15,7 @@ export default function App() {
 
   const [targetDate, setTargetDate] = useState(null);
   const [inputDate, setInputDate] = useState('');
-  
+
   const [tasks, setTasks] = useState([]);
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskDays, setNewTaskDays] = useState('');
@@ -28,14 +28,14 @@ export default function App() {
     });
     return () => unsubscribe();
   }, []);
-  
+
   // Login handler
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError(false);
     try {
       // Convertimos el usuario a formato email internamente para Firebase
-      const email = username === 'chajari' ? 'chajari@agenda.com' : `${username}@agenda.com`;
+      const email = username === 'chajari' ? 'chajari@agenda.com' : `${username}`;
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.error("Error de login:", error);
@@ -91,14 +91,14 @@ export default function App() {
   const addTask = async (e) => {
     e.preventDefault();
     if (!newTaskName || !newTaskDays) return;
-    
+
     await addDoc(collection(db, 'tasks'), {
       name: newTaskName,
       days: parseInt(newTaskDays, 10),
       completed: false,
       createdAt: new Date().toISOString()
     });
-    
+
     setNewTaskName('');
     setNewTaskDays('');
   };
@@ -120,10 +120,10 @@ export default function App() {
   // Calculations
   const today = new Date();
   const remainingCalendarDays = targetDate ? differenceInDays(parseISO(targetDate), today) : 0;
-  
+
   const pendingTasks = tasks.filter(t => !t.completed);
   const totalEstimatedDays = pendingTasks.reduce((sum, t) => sum + t.days, 0);
-  
+
   const isValidDate = targetDate && remainingCalendarDays >= 0;
   const isOnTrack = totalEstimatedDays <= remainingCalendarDays;
 
@@ -146,32 +146,32 @@ export default function App() {
             <h1 className="text-3xl mb-2">Agenda de Obra</h1>
             <p className="text-muted">Ingresa para administrar tu proyecto</p>
           </div>
-          
+
           <form onSubmit={handleLogin} className="flex-col gap-2 mt-4">
             <div>
-              <input 
-                type="text" 
-                placeholder="Usuario" 
+              <input
+                type="text"
+                placeholder="Usuario"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div>
-              <input 
-                type="password" 
-                placeholder="Contraseña" 
+              <input
+                type="password"
+                placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            
+
             {loginError && (
               <div className="text-danger text-center font-bold">
                 Credenciales incorrectas.
               </div>
             )}
-            
-            <button type="submit" className="mt-2" style={{width: '100%'}}>
+
+            <button type="submit" className="mt-2" style={{ width: '100%' }}>
               Ingresar <ArrowRight size={20} />
             </button>
           </form>
@@ -192,15 +192,15 @@ export default function App() {
       {!targetDate ? (
         <div className="glass-panel animate-fade-in delay-1 mt-4">
           <h2 className="text-2xl mb-2 flex items-center gap-1">
-            <Calendar size={28} className="text-primary" /> 
+            <Calendar size={28} className="text-primary" />
             ¿Para cuándo quieres terminar la obra?
           </h2>
           <p className="text-muted mb-2">
             Ingresa la fecha estimada de finalización para que podamos calcular si llegas con los tiempos.
           </p>
           <form onSubmit={handleSetDate} className="flex gap-2">
-            <input 
-              type="date" 
+            <input
+              type="date"
               value={inputDate}
               onChange={(e) => setInputDate(e.target.value)}
               min={format(today, 'yyyy-MM-dd')}
@@ -211,7 +211,7 @@ export default function App() {
         </div>
       ) : (
         <div className="flex-col gap-4 mt-4">
-          
+
           {/* Dashboard de estado */}
           <div className="status-grid animate-fade-in delay-1">
             <div className="glass-panel status-card">
@@ -220,12 +220,12 @@ export default function App() {
               <div className="text-4xl font-bold mt-2">
                 {remainingCalendarDays > 0 ? remainingCalendarDays : 0}
               </div>
-              <div className="text-muted mt-2" style={{fontSize: '0.9rem'}}>
+              <div className="text-muted mt-2" style={{ fontSize: '0.9rem' }}>
                 Hasta el {format(parseISO(targetDate), "d 'de' MMMM, yyyy", { locale: es })}
               </div>
-              <button 
-                className="icon-btn mt-2" 
-                style={{fontSize: '0.9rem'}}
+              <button
+                className="icon-btn mt-2"
+                style={{ fontSize: '0.9rem' }}
                 onClick={clearTargetDate}
               >
                 Cambiar fecha
@@ -240,7 +240,7 @@ export default function App() {
               )}
               <div className="text-muted text-xl">Días de Trabajo (Pendiente)</div>
               <div className="text-4xl font-bold mt-2">{totalEstimatedDays}</div>
-              
+
               <div className="mt-2 font-bold text-xl">
                 {!isValidDate ? (
                   <span className="text-danger">Fecha vencida</span>
@@ -256,26 +256,26 @@ export default function App() {
             <h2 className="text-2xl mb-2 flex items-center gap-1">
               <Clock size={24} /> Cosas que faltan hacer
             </h2>
-            
-            <form onSubmit={addTask} className="flex gap-2 mb-2" style={{flexWrap: 'wrap'}}>
-              <input 
-                type="text" 
-                placeholder="¿Qué falta hacer? Ej: Pintar living" 
+
+            <form onSubmit={addTask} className="flex gap-2 mb-2" style={{ flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                placeholder="¿Qué falta hacer? Ej: Pintar living"
                 value={newTaskName}
                 onChange={(e) => setNewTaskName(e.target.value)}
-                style={{flex: '1 1 300px'}}
+                style={{ flex: '1 1 300px' }}
                 required
               />
-              <input 
-                type="number" 
-                placeholder="Días" 
+              <input
+                type="number"
+                placeholder="Días"
                 value={newTaskDays}
                 onChange={(e) => setNewTaskDays(e.target.value)}
                 min="1"
-                style={{flex: '0 0 100px'}}
+                style={{ flex: '0 0 100px' }}
                 required
               />
-              <button type="submit" style={{flex: '0 0 120px'}}>
+              <button type="submit" style={{ flex: '0 0 120px' }}>
                 <Plus size={20} /> Agregar
               </button>
             </form>
@@ -290,17 +290,17 @@ export default function App() {
                   {tasks.map(task => (
                     <li key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
                       <div className="flex items-center gap-2">
-                        <button 
-                          className="icon-btn" 
+                        <button
+                          className="icon-btn"
                           onClick={() => toggleTask(task)}
-                          style={{color: task.completed ? 'var(--success)' : 'var(--text-muted)'}}
+                          style={{ color: task.completed ? 'var(--success)' : 'var(--text-muted)' }}
                           title={task.completed ? "Marcar como pendiente" : "Marcar como lista"}
                         >
                           <CheckCircle size={24} />
                         </button>
                         <span className="text-xl task-name">{task.name}</span>
                       </div>
-                      
+
                       <div className="task-actions flex items-center gap-2">
                         <span className="task-days">{task.days} {task.days === 1 ? 'día' : 'días'}</span>
                         <button className="icon-btn danger" onClick={() => deleteTask(task.id)} title="Borrar tarea">
