@@ -137,7 +137,7 @@ button.icon-btn.danger:hover {
 }
 
 .flex { display: flex; }
-.flex-col { flex-direction: column; }
+.flex-col { display: flex; flex-direction: column; }
 .items-center { align-items: center; }
 .justify-between { justify-content: space-between; }
 .justify-center { justify-content: center; }
